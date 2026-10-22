@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Um carinho de volta · Tetê Atelier Sucré</title>
+  <meta name="description" content="Recebeu um presente da Tetê Atelier Sucré? Escreva um bilhete de agradecimento e envie um carinho de volta para quem presenteou.">
+  <meta name="theme-color" content="#5a0b10">
+  <meta property="og:title" content="Um carinho merece outro.">
+  <meta property="og:description" content="Escreva um agradecimento e devolva o carinho de um jeito especial.">
+  <meta property="og:image" content="https://gabritomelo10-create.github.io/tete/img/compartilhar.png">
+  <meta property="og:locale" content="pt_BR">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/bodoni-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/manrope-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/estilo.css">
+  <script type="module" src="js/criar.js"></script>
+</head>
+<body data-etapa="inicio">
+  <!-- Abertura: a logo Noël Sucré surge grande antes do site. Some sozinha (CSS) ou com um toque. -->
+  <div class="abertura" id="abertura" aria-hidden="true">
+    <div class="abertura-centro">
+      <span class="logo logo-grande">
+        <span class="logo-palavra" aria-hidden="true"><span class="logo-n">N</span><span class="logo-o"><img src="img/bola-o.svg" alt=""></span><span class="logo-el">ël</span></span>
+        <span class="logo-sucre" aria-hidden="true">Sucré</span>
+      </span>
+      <p class="abertura-frase">Um carinho de volta</p>
+    </div>
+  </div>
+
+  <!-- Topo em Rouge Noël: marca e, na entrada, a chamada principal -->
+  <header class="topo">
+    <a class="marca" href="./" aria-label="Noël Sucré, Tetê Atelier Sucré — início">
+      <span class="logo">
+        <span class="logo-palavra" aria-hidden="true"><span class="logo-n">N</span><span class="logo-o"><img src="img/bola-o.svg" alt=""></span><span class="logo-el">ël</span></span>
+        <span class="logo-sucre" aria-hidden="true">Sucré</span>
+      </span>
+    </a>
+    <div class="topo-chamada">
+      <p class="olho">Um carinho de volta</p>
+      <h1 id="t-inicio">Um carinho merece <em>outro</em>.</h1>
+    </div>
+  </header>
+
+  <main class="pagina">
+    <!-- 1. Entrada (destino do QR da sacola) -->
+    <section class="etapa centro" data-etapa="inicio" tabindex="-1" aria-labelledby="t-inicio">
+      <p class="lead">Alguém escolheu deixar seu dia mais doce.</p>
+      <p class="lead">Agora, você pode devolver esse carinho de um jeito especial.</p>
+      <div class="acoes">
+        <button type="button" class="botao botao-principal" data-ir="nomes">Preparar meu agradecimento</button>
+        <p class="nota">Sem cadastro. Você escreve um bilhete e envia do seu celular.</p>
+      </div>
+    </section>
+
+    <!-- 2. Nomes -->
+    <section class="etapa" data-etapa="nomes" tabindex="-1" aria-labelledby="t-nomes" hidden>
+      <p class="olho">Passo 1 de 2</p>
+      <h2 id="t-nomes">Primeiro, os nomes</h2>
+      <form id="form-nomes" novalidate>
+        <div class="campo">
+          <label for="campo-para">Para quem vai esse carinho?</label>
+          <input class="entrada" id="campo-para" name="para" autocomplete="off" autocapitalize="words" maxlength="40" placeholder="Ex.: Marina" required>
+        </div>
+        <div class="campo">
+          <label for="campo-de">Como você quer assinar?</label>
+          <input class="entrada" id="campo-de" name="de" autocomplete="given-name" autocapitalize="words" maxlength="40" placeholder="Ex.: Ana" required>
+          <span class="dica">Aparece como “Com carinho, <span id="previa-assinatura">Ana</span>”.</span>
+        </div>
+        <p class="erro-campo" id="erro-nomes" role="alert" hidden></p>
+        <div class="acoes acoes-fixas">
+          <button type="submit" class="botao botao-principal">Continuar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 3. Bilhete -->
+    <section class="etapa" data-etapa="escrever" tabindex="-1" aria-labelledby="t-escrever" hidden>
+      <p class="olho">Passo 2 de 2</p>
+      <h2 id="t-escrever">O que tornou esse presente <em>especial</em>?</h2>
+      <p class="nota">Toque em uma ideia para começar (deslize para ver mais), ou escreva do seu jeito.</p>
+      <ul class="sugestoes sugestoes-faixa" data-sugestoes="botoes" aria-label="Ideias para começar"></ul>
+      <div class="campo">
+        <label for="campo-bilhete" class="sr-only">Bilhete</label>
+        <textarea class="entrada" id="campo-bilhete" maxlength="600" placeholder="Escreva aqui…"></textarea>
+        <span class="contador" id="contador-bilhete">0/600</span>
+      </div>
+      <p class="erro-campo" id="erro-bilhete" role="alert" hidden></p>
+      <div class="acoes acoes-fixas">
+        <button type="button" class="botao botao-principal" id="continuar-bilhete">Ver como vai ficar</button>
+      </div>
+    </section>
+
+    <!-- 5. Prévia -->
+    <section class="etapa" data-etapa="previa" tabindex="-1" aria-labelledby="t-previa" hidden>
+      <p class="olho centro">Prévia</p>
+      <div class="cena" id="cena-previa"></div>
+      <div class="aviso" id="aviso-privacidade">
+        <p><strong>Antes de concluir:</strong> qualquer pessoa com o link poderá abrir este agradecimento. Envie só para quem você quer.</p>
+        <p>O bilhete vai dentro do próprio link e não fica guardado em nenhum servidor.</p>
+      </div>
+      <p class="erro-campo" id="erro-salvar" role="alert" hidden></p>
+      <div class="acoes acoes-fixas">
+        <div class="acoes-linha">
+          <button type="button" class="botao botao-secundario" id="editar">Editar</button>
+          <button type="button" class="botao botao-principal" id="salvar">Está pronto</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Pronto para compartilhar -->
+    <section class="etapa" data-etapa="pronto" tabindex="-1" aria-labelledby="t-pronto" hidden>
+      <div class="selo-ok" id="selo-ok"></div>
+      <h2 id="t-pronto" class="centro">Seu carinho está pronto para fazer o caminho de volta.</h2>
+      <p class="nota centro">Escolha a pessoa no seu celular e envie quando quiser.</p>
+
+      <div class="caixa">
+        <h3><label for="texto-envio">Mensagem para acompanhar</label></h3>
+        <textarea class="entrada" id="texto-envio" maxlength="400" aria-describedby="dica-texto"></textarea>
+        <p class="nota mt-8" id="dica-texto">O link do envelope vai junto com esta mensagem.</p>
+      </div>
+      <div class="acoes acoes-fixas">
+        <button type="button" class="botao botao-principal" id="compartilhar"></button>
+        <button type="button" class="botao botao-secundario" id="copiar-link"></button>
+      </div>
+
+      <p class="nota centro mt-12">O carinho vive dentro do link: não fica guardado em nenhum servidor.</p>
+      <p class="link-voltar-carinhos"><a href="./" id="novo-carinho">Preparar outro carinho</a></p>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p class="rodape-frase">Celebre o que torna a vida mais <em>doce</em>.</p>
+    <p class="rodape-marca">Tetê Atelier Sucré</p>
+  </footer>
+</body>
+</html>
