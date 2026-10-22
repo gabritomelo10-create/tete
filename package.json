@@ -1,0 +1,28 @@
+{
+  "name": "um-carinho-de-volta",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Um carinho de volta — quem recebe um presente da Tetê Atelier Sucré grava um agradecimento e envia para quem presenteou.",
+  "type": "module",
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server/index.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch server/index.js",
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/**/*.test.js\"",
+    "e2e": "node --disable-warning=ExperimentalWarning scripts/e2e.js",
+    "qr": "node scripts/qr.js"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/jost": "^5.3.0",
+    "@fontsource/pinyon-script": "^5.3.0",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1",
+    "qrcode": "^1.5.4"
+  }
+}
