@@ -164,7 +164,7 @@ function mostrarEnvelope(dados) {
     el('p', { class: 'cena-de', text: `De ${dados.de}.` }),
     envelope,
     dica,
-    el('div', { class: 'acoes' }, botao)));
+    el('div', { class: 'acoes acoes-fixas' }, botao)));
 }
 
 async function carregar() {

@@ -70,7 +70,7 @@
           <span class="dica">Aparece como “Com carinho, <span id="previa-assinatura">Ana</span>”.</span>
         </div>
         <p class="erro-campo" id="erro-nomes" role="alert" hidden></p>
-        <div class="acoes">
+        <div class="acoes acoes-fixas">
           <button type="submit" class="botao botao-principal">Continuar</button>
         </div>
       </form>
@@ -80,15 +80,15 @@
     <section class="etapa" data-etapa="escrever" tabindex="-1" aria-labelledby="t-escrever" hidden>
       <p class="olho">Passo 2 de 2</p>
       <h2 id="t-escrever">O que tornou esse presente <em>especial</em>?</h2>
-      <p class="nota">Toque em uma ideia para começar, ou escreva do seu jeito.</p>
-      <ul class="sugestoes sugestoes-compactas" data-sugestoes="botoes"></ul>
+      <p class="nota">Toque em uma ideia para começar (deslize para ver mais), ou escreva do seu jeito.</p>
+      <ul class="sugestoes sugestoes-faixa" data-sugestoes="botoes" aria-label="Ideias para começar"></ul>
       <div class="campo">
         <label for="campo-bilhete" class="sr-only">Bilhete</label>
         <textarea class="entrada" id="campo-bilhete" maxlength="600" placeholder="Escreva aqui…"></textarea>
         <span class="contador" id="contador-bilhete">0/600</span>
       </div>
       <p class="erro-campo" id="erro-bilhete" role="alert" hidden></p>
-      <div class="acoes">
+      <div class="acoes acoes-fixas">
         <button type="button" class="botao botao-principal" id="continuar-bilhete">Ver como vai ficar</button>
       </div>
     </section>
@@ -102,7 +102,7 @@
         <p>O bilhete vai dentro do próprio link e não fica guardado em nenhum servidor.</p>
       </div>
       <p class="erro-campo" id="erro-salvar" role="alert" hidden></p>
-      <div class="acoes">
+      <div class="acoes acoes-fixas">
         <div class="acoes-linha">
           <button type="button" class="botao botao-secundario" id="editar">Editar</button>
           <button type="button" class="botao botao-principal" id="salvar">Está pronto</button>
@@ -120,13 +120,13 @@
         <h3><label for="texto-envio">Mensagem para acompanhar</label></h3>
         <textarea class="entrada" id="texto-envio" maxlength="400" aria-describedby="dica-texto"></textarea>
         <p class="nota mt-8" id="dica-texto">O link do envelope vai junto com esta mensagem.</p>
-        <div class="acoes pt-18">
-          <button type="button" class="botao botao-principal" id="compartilhar"></button>
-          <button type="button" class="botao botao-secundario" id="copiar-link"></button>
-        </div>
+      </div>
+      <div class="acoes acoes-fixas">
+        <button type="button" class="botao botao-principal" id="compartilhar"></button>
+        <button type="button" class="botao botao-secundario" id="copiar-link"></button>
       </div>
 
-      <p class="nota centro mt-12">Este carinho vive dentro do link: ele não fica guardado em nenhum servidor nem tem prazo para acabar.</p>
+      <p class="nota centro mt-12">O carinho vive dentro do link: não fica guardado em nenhum servidor.</p>
       <p class="link-voltar-carinhos"><a href="./" id="novo-carinho">Preparar outro carinho</a></p>
     </section>
   </main>

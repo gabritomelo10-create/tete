@@ -71,7 +71,7 @@ export function criarEnvelope({ para, aoAbrir, rotulo }) {
   el('span', { class: 'env-fita-v' }),
   el('span', { class: 'env-fita-h' }),
   svg(LACO),
-  el('span', { class: 'env-etiqueta', text: `Para ${para}` }));
+  el('span', { class: [...para].length > 12 ? 'env-etiqueta longa' : 'env-etiqueta', text: `Para ${para}` }));
 
   envelope.addEventListener('click', () => {
     if (envelope.classList.contains('abrindo')) return;
