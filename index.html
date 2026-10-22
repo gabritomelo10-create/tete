@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Um carinho de volta · Tetê Atelier Sucré</title>
-  <meta name="description" content="Recebeu um presente da Tetê Atelier Sucré? Grave um agradecimento e envie um carinho de volta para quem presenteou.">
+  <meta name="description" content="Recebeu um presente da Tetê Atelier Sucré? Escreva um bilhete de agradecimento e envie um carinho de volta para quem presenteou.">
   <meta name="theme-color" content="#5a0b10">
   <meta property="og:title" content="Um carinho merece outro.">
-  <meta property="og:description" content="Grave um agradecimento e devolva o carinho de um jeito especial.">
+  <meta property="og:description" content="Escreva um agradecimento e devolva o carinho de um jeito especial.">
   <meta property="og:image" content="https://gabritomelo10-create.github.io/tete/img/compartilhar.png">
   <meta property="og:locale" content="pt_BR">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'">
   <meta name="referrer" content="no-referrer">
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/bodoni-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -19,12 +19,24 @@
   <script type="module" src="js/criar.js"></script>
 </head>
 <body data-etapa="inicio">
+  <!-- Abertura: a logo Noël Sucré surge grande antes do site. Some sozinha (CSS) ou com um toque. -->
+  <div class="abertura" id="abertura" aria-hidden="true">
+    <div class="abertura-centro">
+      <span class="logo logo-grande">
+        <span class="logo-palavra" aria-hidden="true"><span class="logo-n">N</span><span class="logo-o"><img src="img/bola-o.svg" alt=""></span><span class="logo-el">ël</span></span>
+        <span class="logo-sucre" aria-hidden="true">Sucré</span>
+      </span>
+      <p class="abertura-frase">Um carinho de volta</p>
+    </div>
+  </div>
+
   <!-- Topo em Rouge Noël: marca e, na entrada, a chamada principal -->
   <header class="topo">
     <a class="marca" href="./" aria-label="Noël Sucré, Tetê Atelier Sucré — início">
-      <img class="marca-bola" src="img/bola.svg" alt="" width="30" height="46">
-      <span class="marca-nome">Noël</span>
-      <span class="marca-sub">Sucré</span>
+      <span class="logo">
+        <span class="logo-palavra" aria-hidden="true"><span class="logo-n">N</span><span class="logo-o"><img src="img/bola-o.svg" alt=""></span><span class="logo-el">ël</span></span>
+        <span class="logo-sucre" aria-hidden="true">Sucré</span>
+      </span>
     </a>
     <div class="topo-chamada">
       <p class="olho">Um carinho de volta</p>
@@ -39,13 +51,13 @@
       <p class="lead">Agora, você pode devolver esse carinho de um jeito especial.</p>
       <div class="acoes">
         <button type="button" class="botao botao-principal" data-ir="nomes">Preparar meu agradecimento</button>
-        <p class="nota">Sem cadastro. Você grava uma mensagem de voz ou escreve um bilhete, e envia do seu celular.</p>
+        <p class="nota">Sem cadastro. Você escreve um bilhete e envia do seu celular.</p>
       </div>
     </section>
 
     <!-- 2. Nomes -->
     <section class="etapa" data-etapa="nomes" tabindex="-1" aria-labelledby="t-nomes" hidden>
-      <p class="olho">Passo 1 de 3</p>
+      <p class="olho">Passo 1 de 2</p>
       <h2 id="t-nomes">Primeiro, os nomes</h2>
       <form id="form-nomes" novalidate>
         <div class="campo">
@@ -64,71 +76,11 @@
       </form>
     </section>
 
-    <!-- 3. Inspiração e escolha -->
-    <section class="etapa" data-etapa="palavras" tabindex="-1" aria-labelledby="t-palavras" hidden>
-      <p class="olho">Passo 2 de 3</p>
-      <h2 id="t-palavras">O que tornou esse presente especial?</h2>
-      <p class="nota">Algumas ideias para começar. A mensagem é sua, do seu jeito.</p>
-      <ul class="sugestoes" data-sugestoes="lista"></ul>
-      <div class="acoes">
-        <button type="button" class="botao botao-principal" data-ir="gravar">
-          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>
-          Gravar minha mensagem
-        </button>
-        <button type="button" class="botao botao-secundario" data-ir="escrever">Prefiro escrever um bilhete</button>
-      </div>
-    </section>
-
-    <!-- 4a. Gravação -->
-    <section class="etapa" data-etapa="gravar" tabindex="-1" aria-labelledby="t-gravar" hidden>
-      <p class="olho">Passo 3 de 3</p>
-      <h2 id="t-gravar">Sua voz, seu carinho</h2>
-      <p class="nota">Até 1 minuto. Fale com calma: <span data-nome="para">quem recebe</span> vai ouvir exatamente assim.</p>
-
-      <div class="gravador" id="gravador" data-estado="pronto">
-        <div class="anel" id="anel">
-          <button type="button" class="botao-gravar" id="botao-gravar" aria-label="Começar a gravar">
-            <svg class="icone-mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>
-            <svg class="icone-parar" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2.2" fill="currentColor"/></svg>
-          </button>
-        </div>
-        <div class="tempo" aria-live="off">
-          <span class="ponto-rec" id="ponto-rec" hidden></span>
-          <span id="tempo-atual">0:00</span><span class="limite">/ 1:00</span>
-        </div>
-        <p class="rotulo-estado" id="rotulo-gravacao" aria-live="polite">Toque para começar a gravar</p>
-      </div>
-
-      <div class="aviso aviso-erro" id="erro-microfone" role="alert" hidden>
-        <p id="erro-microfone-texto"></p>
-        <div class="acoes-linha mt-12">
-          <button type="button" class="botao botao-secundario" id="tentar-microfone">Tentar de novo</button>
-          <button type="button" class="botao botao-principal" data-ir="escrever">Escrever bilhete</button>
-        </div>
-      </div>
-
-      <div class="revisao" id="revisao" hidden>
-        <p class="rotulo-estado">Ouça antes de seguir:</p>
-        <div id="revisao-player"></div>
-        <button type="button" class="botao botao-texto" id="regravar">Apagar e gravar de novo</button>
-      </div>
-
-      <details class="cola" id="cola-gravacao">
-        <summary>Precisa de uma ideia?</summary>
-        <ul class="sugestoes sugestoes-compactas" data-sugestoes="lista"></ul>
-      </details>
-
-      <div class="acoes">
-        <button type="button" class="botao botao-principal" id="continuar-audio" hidden>Ver como vai ficar</button>
-        <button type="button" class="botao botao-texto" data-ir="escrever" id="link-escrever">Prefiro escrever um bilhete</button>
-      </div>
-    </section>
-
-    <!-- 4b. Bilhete -->
+    <!-- 3. Bilhete -->
     <section class="etapa" data-etapa="escrever" tabindex="-1" aria-labelledby="t-escrever" hidden>
-      <p class="olho">Passo 3 de 3</p>
-      <h2 id="t-escrever">Seu bilhete</h2>
-      <p class="nota">Toque em uma ideia para começar, ou escreva do zero.</p>
+      <p class="olho">Passo 2 de 2</p>
+      <h2 id="t-escrever">O que tornou esse presente <em>especial</em>?</h2>
+      <p class="nota">Toque em uma ideia para começar, ou escreva do seu jeito.</p>
       <ul class="sugestoes sugestoes-compactas" data-sugestoes="botoes"></ul>
       <div class="campo">
         <label for="campo-bilhete" class="sr-only">Bilhete</label>
@@ -138,7 +90,6 @@
       <p class="erro-campo" id="erro-bilhete" role="alert" hidden></p>
       <div class="acoes">
         <button type="button" class="botao botao-principal" id="continuar-bilhete">Ver como vai ficar</button>
-        <button type="button" class="botao botao-texto" data-ir="gravar">Prefiro gravar minha voz</button>
       </div>
     </section>
 
@@ -148,8 +99,7 @@
       <div class="cena" id="cena-previa"></div>
       <div class="aviso" id="aviso-privacidade">
         <p><strong>Antes de concluir:</strong> qualquer pessoa com o link poderá abrir este agradecimento. Envie só para quem você quer.</p>
-        <p id="aviso-bilhete">O bilhete vai dentro do próprio link e não fica guardado em nenhum servidor.</p>
-        <p id="aviso-audio" hidden>Você vai enviar duas coisas na mesma conversa: o link do envelope e, logo depois, o seu áudio. Nada fica guardado em servidor.</p>
+        <p>O bilhete vai dentro do próprio link e não fica guardado em nenhum servidor.</p>
       </div>
       <p class="erro-campo" id="erro-salvar" role="alert" hidden></p>
       <div class="acoes">
@@ -166,24 +116,13 @@
       <h2 id="t-pronto" class="centro">Seu carinho está pronto para fazer o caminho de volta.</h2>
       <p class="nota centro">Escolha a pessoa no seu celular e envie quando quiser.</p>
 
-      <div class="caixa passo">
-        <span class="passo-numero" data-com-audio hidden>1</span>
-        <div class="passo-corpo">
-          <h3><label for="texto-envio">Envie o envelope</label></h3>
-          <textarea class="entrada" id="texto-envio" maxlength="400" aria-describedby="dica-texto"></textarea>
-          <span class="dica nota" id="dica-texto">O link do envelope vai junto com esta mensagem.</span>
+      <div class="caixa">
+        <h3><label for="texto-envio">Mensagem para acompanhar</label></h3>
+        <textarea class="entrada" id="texto-envio" maxlength="400" aria-describedby="dica-texto"></textarea>
+        <p class="nota mt-8" id="dica-texto">O link do envelope vai junto com esta mensagem.</p>
+        <div class="acoes pt-18">
           <button type="button" class="botao botao-principal" id="compartilhar"></button>
           <button type="button" class="botao botao-secundario" id="copiar-link"></button>
-        </div>
-      </div>
-
-      <div class="caixa passo" data-com-audio hidden>
-        <span class="passo-numero">2</span>
-        <div class="passo-corpo">
-          <h3>Envie seu áudio na mesma conversa</h3>
-          <p class="nota" id="dica-audio">Escolha a mesma pessoa. O áudio chega logo abaixo do envelope.</p>
-          <button type="button" class="botao botao-principal" id="compartilhar-audio"></button>
-          <a class="botao botao-texto" id="baixar-audio" download></a>
         </div>
       </div>
 

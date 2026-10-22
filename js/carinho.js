@@ -131,14 +131,11 @@ async function guardarBilhete(dados) {
 function mostrarCarta(dados) {
   const { carta } = criarCarta(dados);
   carta.classList.add('revelando');
-  const guardar = el('div', { class: 'guardar' });
-  if (dados.bilhete) {
-    guardar.append(el('button', {
-      type: 'button',
-      class: 'botao botao-texto',
-      onclick: () => guardarBilhete(dados),
-    }, icones.baixar(), 'Guardar o bilhete como imagem'));
-  }
+  const guardar = el('div', { class: 'guardar' }, el('button', {
+    type: 'button',
+    class: 'botao botao-texto',
+    onclick: () => guardarBilhete(dados),
+  }, icones.baixar(), 'Guardar o bilhete como imagem'));
   conteudo.replaceChildren(el('div', { class: 'cena' }, carta, guardar));
   conteudo.focus({ preventScroll: true });
 }

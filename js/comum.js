@@ -1,4 +1,4 @@
-// Peças compartilhadas entre as páginas: envelope, carta, player, brilhos e utilidades.
+// Peças compartilhadas entre as páginas: abertura, envelope, carta, brilhos e utilidades.
 
 export const reduzirMovimento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -26,13 +26,9 @@ function svg(marcacao) {
   return tpl.content.firstElementChild;
 }
 export const icones = {
-  play: () => svg('<svg class="icone-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>'),
-  pausa: () => svg('<svg class="icone-pausa" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2" fill="currentColor"/><rect x="13.5" y="5" width="4" height="14" rx="1.2" fill="currentColor"/></svg>'),
   baixar: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg>'),
-  repetir: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4.5v3.7h3.7"/></svg>'),
   compartilhar: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L8 8m4-4 4 4M6 11H5a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1h-1"/></svg>'),
   copiar: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg>'),
-  voz: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>'),
   ok: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>'),
 };
 
@@ -97,101 +93,25 @@ export async function abrirEnvelope(envelope) {
   await espera(rapido ? 50 : 380);
 }
 
-export function formatarTempo(segundos) {
-  if (!Number.isFinite(segundos) || segundos < 0) segundos = 0;
-  const s = Math.floor(segundos);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-}
-
-export function formatarData(iso) {
-  return new Date(iso).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
-// Player com controles próprios. Muitos navegadores informam duração "Infinity" para áudios
-// recém-gravados em WebM; nesse caso usamos a duração medida durante a gravação.
-export function criarPlayer(src, duracaoMs) {
-  const audio = el('audio', { preload: 'metadata', src });
-  const barra = el('input', {
-    type: 'range', class: 'player-barra', min: '0', max: '1000', value: '0', step: '1',
-    'aria-label': 'Posição do áudio',
-  });
-  const atual = el('span', { text: '0:00' });
-  const total = el('span', { text: formatarTempo((duracaoMs ?? 0) / 1000) });
-  const botao = el('button', { type: 'button', class: 'player-play', 'aria-label': 'Ouvir mensagem' }, icones.play(), icones.pausa());
-  const player = el('div', { class: 'player', 'data-tocando': 'nao' },
-    botao,
-    el('div', { class: 'player-trilha' }, barra, el('div', { class: 'player-tempos' }, atual, total)),
-    audio);
-
-  let arrastando = false;
-  const duracao = () => (Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : (duracaoMs ?? 0) / 1000);
-  const pintar = () => {
-    const d = duracao();
-    const fracao = d ? Math.min(audio.currentTime / d, 1) : 0;
-    if (!arrastando) barra.value = String(Math.round(fracao * 1000));
-    barra.style.setProperty('--p', `${fracao * 100}%`);
-    atual.textContent = formatarTempo(audio.currentTime);
-    if (d) total.textContent = formatarTempo(d);
-  };
-
-  botao.addEventListener('click', () => {
-    if (audio.paused) audio.play().catch(() => {});
-    else audio.pause();
-  });
-  audio.addEventListener('play', () => {
-    player.dataset.tocando = 'sim';
-    botao.setAttribute('aria-label', 'Pausar');
-  });
-  audio.addEventListener('pause', () => {
-    player.dataset.tocando = 'nao';
-    botao.setAttribute('aria-label', 'Ouvir mensagem');
-  });
-  audio.addEventListener('timeupdate', pintar);
-  audio.addEventListener('loadedmetadata', pintar);
-  audio.addEventListener('durationchange', pintar);
-  audio.addEventListener('ended', () => {
-    player.dispatchEvent(new CustomEvent('terminou'));
-    pintar();
-  });
-  barra.addEventListener('input', () => {
-    arrastando = true;
-    const d = duracao();
-    if (d) audio.currentTime = (Number(barra.value) / 1000) * d;
-    pintar();
-  });
-  barra.addEventListener('change', () => { arrastando = false; });
-
-  return {
-    elemento: player,
-    audio,
-    tocar: () => audio.play(),
-    reiniciar: () => {
-      audio.currentTime = 0;
-      return audio.play();
-    },
-    parar: () => audio.pause(),
-  };
-}
-
-// Carta revelada dentro do envelope: saudação, bilhete e/ou aviso do áudio, assinatura.
-// `audioSrc` só existe na revisão de quem grava; quem recebe ganha o áudio na própria conversa.
-export function criarCarta({ para, de, bilhete, comAudio, audioSrc, duracaoMs }) {
+// Carta revelada dentro do envelope: saudação, bilhete e assinatura.
+export function criarCarta({ para, de, bilhete }) {
   const carta = el('article', { class: 'carta', 'aria-label': `Agradecimento de ${de}` },
-    el('p', { class: 'carta-saudacao', text: `${para},` }));
-  let player = null;
-  if (bilhete) carta.append(el('p', { class: 'carta-bilhete', text: bilhete }));
-  if (comAudio && audioSrc) {
-    player = criarPlayer(audioSrc, duracaoMs);
-    carta.append(el('div', { class: 'carta-audio' }, player.elemento));
-  } else if (comAudio) {
-    carta.append(el('div', { class: 'carta-voz' },
-      icones.voz(),
-      el('p', {},
-        el('strong', { text: `${de} gravou uma mensagem de voz para você.` }),
-        ' Ela chegou junto com este link, na sua conversa. Dê o play por lá.')));
-  }
-  carta.append(el('p', { class: 'carta-assinatura' }, 'Com carinho,', el('span', { class: 'nome', text: de })));
-  return { carta, player };
+    el('p', { class: 'carta-saudacao', text: `${para},` }),
+    el('p', { class: 'carta-bilhete', text: bilhete }),
+    el('p', { class: 'carta-assinatura' }, 'Com carinho,', el('span', { class: 'nome', text: de })));
+  return { carta };
+}
+
+// Abertura com a logo grande. A saída é feita pelo CSS (mesmo sem JavaScript);
+// aqui só permitimos pular com um toque e removemos o elemento ao final.
+export function abertura() {
+  const camada = document.getElementById('abertura');
+  if (!camada) return;
+  const remover = () => camada.remove();
+  camada.addEventListener('animationend', (evento) => {
+    if (evento.target === camada && evento.animationName === 'abertura-sair') remover();
+  });
+  camada.addEventListener('click', () => camada.classList.add('saindo'), { once: true });
 }
 
 export function brilhos(quantidade = 18) {

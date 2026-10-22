@@ -37,28 +37,22 @@ export function limparTexto(valor, max, { multilinha = false } = {}) {
 function validar(dados) {
   const para = limparTexto(dados?.p, LIMITES.nome);
   const de = limparTexto(dados?.d, LIMITES.nome);
-  const bilhete = limparTexto(dados?.b ?? '', LIMITES.bilhete, { multilinha: true });
-  const comAudio = dados?.a === 1;
-  if (!para || !de || (!bilhete && !comAudio)) return null;
-  return { para, de, bilhete, comAudio };
+  const bilhete = limparTexto(dados?.b, LIMITES.bilhete, { multilinha: true });
+  if (!para || !de || !bilhete) return null;
+  return { para, de, bilhete };
 }
 
-// { para, de, bilhete, comAudio } → texto para colocar depois do "#".
-export async function empacotar({ para, de, bilhete, comAudio }) {
-  const dados = validar({ p: para, d: de, b: bilhete, a: comAudio ? 1 : undefined });
+// { para, de, bilhete } → texto para colocar depois do "#".
+export async function empacotar({ para, de, bilhete }) {
+  const dados = validar({ p: para, d: de, b: bilhete });
   if (!dados) throw new Error('Dados incompletos');
-  const json = JSON.stringify({
-    p: dados.para,
-    d: dados.de,
-    ...(dados.bilhete ? { b: dados.bilhete } : {}),
-    ...(dados.comAudio ? { a: 1 } : {}),
-  });
+  const json = JSON.stringify({ p: dados.para, d: dados.de, b: dados.bilhete });
   const bytes = new TextEncoder().encode(json);
   if (comprime()) return `z${paraBase64url(await transformar(bytes, new CompressionStream('deflate-raw')))}`;
   return `j${paraBase64url(bytes)}`;
 }
 
-// Texto depois do "#" → { para, de, bilhete, comAudio }, ou null se o link estiver incompleto.
+// Texto depois do "#" → { para, de, bilhete }, ou null se o link estiver incompleto.
 export async function desempacotar(texto) {
   try {
     const conteudo = decodeURIComponent(String(texto).replace(/^#/, '')).trim();

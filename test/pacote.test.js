@@ -3,16 +3,11 @@ import assert from 'node:assert/strict';
 import { empacotar, desempacotar } from '../js/pacote.js';
 
 test('o bilhete vai e volta dentro do link, sem nomes legíveis', async () => {
-  const dados = { para: 'Marina', de: 'Ana', bilhete: 'Você lembrou de mim.\nObrigada! 💛', comAudio: false };
+  const dados = { para: 'Marina', de: 'Ana', bilhete: 'Você lembrou de mim.\nObrigada! 💛' };
   const pacote = await empacotar(dados);
   assert.match(pacote, /^z[A-Za-z0-9_-]+$/);
   assert.doesNotMatch(pacote, /Marina|Ana/);
   assert.deepEqual(await desempacotar(`#${pacote}`), dados);
-});
-
-test('carinho com áudio leva só os nomes e o aviso de áudio', async () => {
-  const dados = { para: 'Dona Helena', de: 'Beto', bilhete: '', comAudio: true };
-  assert.deepEqual(await desempacotar(await empacotar(dados)), dados);
 });
 
 test('um bilhete longo ainda gera um link curto o bastante para o WhatsApp', async () => {
@@ -24,7 +19,7 @@ test('um bilhete longo ainda gera um link curto o bastante para o WhatsApp', asy
 test('formato sem compressão também é lido', async () => {
   const json = JSON.stringify({ p: 'Lia', d: 'Rafa', b: 'Oi' });
   const pacote = `j${Buffer.from(json).toString('base64url')}`;
-  assert.deepEqual(await desempacotar(pacote), { para: 'Lia', de: 'Rafa', bilhete: 'Oi', comAudio: false });
+  assert.deepEqual(await desempacotar(pacote), { para: 'Lia', de: 'Rafa', bilhete: 'Oi' });
 });
 
 test('links cortados, adulterados ou incompletos não abrem', async () => {
@@ -32,6 +27,7 @@ test('links cortados, adulterados ou incompletos não abrem', async () => {
   const invalidos = [
     '', '#', '#x123', pacote.slice(0, 8), `${pacote}%%`,
     `j${Buffer.from(JSON.stringify({ p: 'Marina', d: 'Ana' })).toString('base64url')}`,
+    `j${Buffer.from(JSON.stringify({ p: 'Marina', d: 'Ana', a: 1 })).toString('base64url')}`,
     `j${Buffer.from(JSON.stringify({ p: 'x'.repeat(41), d: 'Ana', b: 'oi' })).toString('base64url')}`,
     `j${Buffer.from(JSON.stringify({ p: 'Marina', d: 'Ana', b: 'x'.repeat(601) })).toString('base64url')}`,
     `j${Buffer.from('não é json').toString('base64url')}`,
@@ -41,7 +37,7 @@ test('links cortados, adulterados ou incompletos não abrem', async () => {
 
 test('limpa espaços e caracteres de controle', async () => {
   const pacote = await empacotar({ para: '  Marina \u0000 Souza ', de: 'Ana​', bilhete: 'Linha 1\r\n\r\n\r\n\r\nLinha 2' });
-  assert.deepEqual(await desempacotar(pacote), { para: 'Marina Souza', de: 'Ana', bilhete: 'Linha 1\n\nLinha 2', comAudio: false });
+  assert.deepEqual(await desempacotar(pacote), { para: 'Marina Souza', de: 'Ana', bilhete: 'Linha 1\n\nLinha 2' });
 });
 
 test('recusa dados incompletos ao montar', async () => {
