@@ -38,7 +38,7 @@ Se no futuro quiserem o áudio tocando dentro do envelope, link curto e exclusã
 | `js/comum.js` | Envelope, carta, player, brilhos, cópia. |
 | `sacola/index.html` | Endereço fixo do QR. Redireciona para a entrada; troque o `url=` para mudar o destino sem reimprimir. |
 | `css/estilo.css` | Identidade visual. As cores são variáveis no topo do arquivo. |
-| `fonts/` | Cormorant Garamond, Pinyon Script e Jost, servidas pelo próprio site (licença OFL em `fonts/LICENSE-OFL.txt`). |
+| `fonts/` | Bodoni Moda e Manrope, servidas pelo próprio site (licença OFL em `fonts/LICENSE-OFL.txt`). |
 | `.nojekyll` | Faz o GitHub Pages publicar os arquivos como estão. |
 
 ## Desenvolvimento
@@ -58,7 +58,12 @@ O microfone só funciona em HTTPS (o GitHub Pages já usa) ou em `localhost`.
 
 ## Identidade visual
 
-Creme, dourado, textura suave de papel e movimento delicado, seguindo a sacola e a campanha *Noël Sucré*. Para ajustar aos tons exatos da apresentação de Natal, troque `--creme`, `--dourado` e afins no topo de `css/estilo.css`. Quem tem "reduzir movimento" ativado no celular vê a abertura instantânea.
+Segue a identidade da campanha **Noël Sucré**:
+- **Cores:** vinho profundo com brilho dourado (estrelinhas de quatro pontas e bokeh), ouro metálico e papel creme.
+- **Tipografia:** **Bodoni Moda** nos títulos, nomes e no bilhete; **Manrope** nos textos e botões.
+- **Elementos:** a bola de Natal com a estrela pendurada sobre "Noël Sucré", a trama de losangos (faixas laterais e relevo do envelope), o laço de cetim vinho com etiqueta e a frase "Celebre o que torna a vida mais *doce*."
+
+Cores e fontes são variáveis no topo de `css/estilo.css`. A marca no topo é uma recriação com fonte e SVG (`img/bola.svg`); se houver o logo oficial em SVG, basta trocar. A imagem de prévia do link (`img/compartilhar.png`) é gerada a partir do próprio envelope com `npm run imagem-compartilhar`. Quem tem "reduzir movimento" ativado no celular vê a abertura instantânea.
 
 ## QR da sacola
 

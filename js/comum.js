@@ -40,11 +40,12 @@ const LACO = `
 <svg class="env-laco" viewBox="0 0 140 100" aria-hidden="true">
   <defs>
     <linearGradient id="ouro-laco" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#F1DDA8"/><stop offset=".45" stop-color="#C9A259"/>
-      <stop offset=".75" stop-color="#A67D38"/><stop offset="1" stop-color="#D9BC7E"/>
+      <stop offset="0" stop-color="#A42634"/><stop offset=".38" stop-color="#7C1420"/>
+      <stop offset=".62" stop-color="#5A0B14"/><stop offset=".85" stop-color="#8E1C28"/><stop offset="1" stop-color="#6A1019"/>
     </linearGradient>
     <linearGradient id="ouro-sombra" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#8A672B" stop-opacity=".0"/><stop offset="1" stop-color="#7A5A22" stop-opacity=".45"/>
+      <stop offset="0" stop-color="#FFD9CF" stop-opacity=".28"/><stop offset=".5" stop-color="#FFD9CF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#2A0306" stop-opacity=".5"/>
     </linearGradient>
   </defs>
   <g class="ponta ponta-e"><path d="M64 50 L44 96 L53 91 L58 99 L72 54Z" fill="url(#ouro-laco)"/></g>
@@ -193,12 +194,14 @@ export function criarCarta({ para, de, bilhete, comAudio, audioSrc, duracaoMs })
   return { carta, player };
 }
 
-export function brilhos(quantidade = 14) {
+export function brilhos(quantidade = 26) {
   if (reduzirMovimento()) return;
   const camada = el('div', { class: 'brilhos', 'aria-hidden': 'true' });
   for (let i = 0; i < quantidade; i += 1) {
-    const ponto = el('span');
-    const tamanho = 3 + Math.random() * 5;
+    // Como nas peças da campanha: pontos de luz, estrelinhas de quatro pontas e bokeh desfocado.
+    const tipo = i % 5 === 0 ? 'bokeh' : i % 3 === 0 ? 'estrela' : '';
+    const ponto = el('span', { class: tipo || undefined });
+    const tamanho = tipo === 'bokeh' ? 14 + Math.random() * 18 : tipo === 'estrela' ? 7 + Math.random() * 6 : 2 + Math.random() * 4;
     ponto.style.left = `${Math.random() * 100}%`;
     ponto.style.width = `${tamanho}px`;
     ponto.style.height = `${tamanho}px`;
