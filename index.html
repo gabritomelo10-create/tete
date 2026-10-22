@@ -18,19 +18,23 @@
   <link rel="stylesheet" href="css/estilo.css">
   <script type="module" src="js/criar.js"></script>
 </head>
-<body>
-  <main class="pagina">
+<body data-etapa="inicio">
+  <!-- Topo em Rouge Noël: marca e, na entrada, a chamada principal -->
+  <header class="topo">
     <a class="marca" href="./" aria-label="Noël Sucré, Tetê Atelier Sucré — início">
       <img class="marca-bola" src="img/bola.svg" alt="" width="30" height="46">
       <span class="marca-nome">Noël</span>
       <span class="marca-sub">Sucré</span>
     </a>
-
-    <!-- 1. Entrada (destino do QR da sacola) -->
-    <section class="etapa centro" data-etapa="inicio" tabindex="-1" aria-labelledby="t-inicio">
+    <div class="topo-chamada">
       <p class="olho">Um carinho de volta</p>
       <h1 id="t-inicio">Um carinho merece <em>outro</em>.</h1>
-      <div class="filete" aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <main class="pagina">
+    <!-- 1. Entrada (destino do QR da sacola) -->
+    <section class="etapa centro" data-etapa="inicio" tabindex="-1" aria-labelledby="t-inicio">
       <p class="lead">Alguém escolheu deixar seu dia mais doce.</p>
       <p class="lead">Agora, você pode devolver esse carinho de um jeito especial.</p>
       <div class="acoes">

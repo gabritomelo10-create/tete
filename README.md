@@ -58,10 +58,18 @@ O microfone só funciona em HTTPS (o GitHub Pages já usa) ou em `localhost`.
 
 ## Identidade visual
 
-Segue a identidade da campanha **Noël Sucré**:
-- **Cores:** vinho profundo com brilho dourado (estrelinhas de quatro pontas e bokeh), ouro metálico e papel creme.
+Segue a identidade da campanha **Noël Sucré** e a sua proporção cromática:
+
+| Cor | Proporção | Onde aparece |
+|---|---|---|
+| Rouge Noël | 35% | Topo com brilhos e faixas de losangos, envelope, botões principais |
+| Crème | 25% | Papel de fundo do conteúdo |
+| Vert Sapin | 15% | Rodapé com faixa de losangos, avisos, números dos passos |
+| Blanc | 15% | Carta, campos, cartões |
+| Or Noël | 10% | Marca, trama de losangos, filetes, estrelas, ilhós |
+
 - **Tipografia:** **Bodoni Moda** nos títulos, nomes e no bilhete; **Manrope** nos textos e botões.
-- **Elementos:** a bola de Natal com a estrela pendurada sobre "Noël Sucré", a trama de losangos (faixas laterais e relevo do envelope), o laço de cetim vinho com etiqueta e a frase "Celebre o que torna a vida mais *doce*."
+- **Elementos:** a bola de Natal com a estrela pendurada sobre "Noël Sucré"; a trama de losangos facetados (`img/losangos.svg`); o envelope em Rouge Noël com faixa dourada, laço de cetim e etiqueta Crème; a frase "Celebre o que torna a vida mais *doce*."
 
 Cores e fontes são variáveis no topo de `css/estilo.css`. A marca no topo é uma recriação com fonte e SVG (`img/bola.svg`); se houver o logo oficial em SVG, basta trocar. A imagem de prévia do link (`img/compartilhar.png`) é gerada a partir do próprio envelope com `npm run imagem-compartilhar`. Quem tem "reduzir movimento" ativado no celular vê a abertura instantânea.
 

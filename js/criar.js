@@ -24,7 +24,7 @@ const estado = {
 };
 
 const $ = (seletor) => document.querySelector(seletor);
-const etapas = [...document.querySelectorAll('[data-etapa]')];
+const etapas = [...document.querySelectorAll('section[data-etapa]')];
 
 // ---------- Navegação entre etapas (com suporte ao botão "voltar" do celular) ----------
 
@@ -44,6 +44,7 @@ function mostrar(nome) {
     etapa.hidden = !ativa;
     etapa.classList.toggle('entrando', ativa);
   }
+  document.body.dataset.etapa = nome;
   window.scrollTo({ top: 0 });
   const atual = etapas.find((e) => e.dataset.etapa === nome);
   atual.focus({ preventScroll: true });

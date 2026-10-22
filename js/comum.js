@@ -40,8 +40,8 @@ const LACO = `
 <svg class="env-laco" viewBox="0 0 140 100" aria-hidden="true">
   <defs>
     <linearGradient id="ouro-laco" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#A42634"/><stop offset=".38" stop-color="#7C1420"/>
-      <stop offset=".62" stop-color="#5A0B14"/><stop offset=".85" stop-color="#8E1C28"/><stop offset="1" stop-color="#6A1019"/>
+      <stop offset="0" stop-color="#C8363C"/><stop offset=".38" stop-color="#A2222A"/>
+      <stop offset=".62" stop-color="#76131A"/><stop offset=".85" stop-color="#B42C33"/><stop offset="1" stop-color="#8A1920"/>
     </linearGradient>
     <linearGradient id="ouro-sombra" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#FFD9CF" stop-opacity=".28"/><stop offset=".5" stop-color="#FFD9CF" stop-opacity="0"/>
@@ -194,7 +194,7 @@ export function criarCarta({ para, de, bilhete, comAudio, audioSrc, duracaoMs })
   return { carta, player };
 }
 
-export function brilhos(quantidade = 26) {
+export function brilhos(quantidade = 18) {
   if (reduzirMovimento()) return;
   const camada = el('div', { class: 'brilhos', 'aria-hidden': 'true' });
   for (let i = 0; i < quantidade; i += 1) {
@@ -210,7 +210,8 @@ export function brilhos(quantidade = 26) {
     ponto.style.setProperty('--deriva', `${(Math.random() - 0.5) * 120}px`);
     camada.append(ponto);
   }
-  document.body.prepend(camada);
+  // Os brilhos ficam só no topo em Rouge Noël, como nas peças da campanha.
+  (document.querySelector('.topo') ?? document.body).prepend(camada);
 }
 
 let timerToast;
