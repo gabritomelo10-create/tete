@@ -32,6 +32,7 @@ export const icones = {
   repetir: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4.5v3.7h3.7"/></svg>'),
   compartilhar: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L8 8m4-4 4 4M6 11H5a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1h-1"/></svg>'),
   copiar: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg>'),
+  voz: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>'),
   ok: () => svg('<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>'),
 };
 
@@ -171,16 +172,22 @@ export function criarPlayer(src, duracaoMs) {
   };
 }
 
-// Carta revelada dentro do envelope: saudação, bilhete ou player, assinatura.
-export function criarCarta({ para, de, tipo, bilhete, audioSrc, duracaoMs }) {
+// Carta revelada dentro do envelope: saudação, bilhete e/ou aviso do áudio, assinatura.
+// `audioSrc` só existe na revisão de quem grava; quem recebe ganha o áudio na própria conversa.
+export function criarCarta({ para, de, bilhete, comAudio, audioSrc, duracaoMs }) {
   const carta = el('article', { class: 'carta', 'aria-label': `Agradecimento de ${de}` },
     el('p', { class: 'carta-saudacao', text: `${para},` }));
   let player = null;
-  if (tipo === 'audio') {
+  if (bilhete) carta.append(el('p', { class: 'carta-bilhete', text: bilhete }));
+  if (comAudio && audioSrc) {
     player = criarPlayer(audioSrc, duracaoMs);
     carta.append(el('div', { class: 'carta-audio' }, player.elemento));
-  } else {
-    carta.append(el('p', { class: 'carta-bilhete', text: bilhete }));
+  } else if (comAudio) {
+    carta.append(el('div', { class: 'carta-voz' },
+      icones.voz(),
+      el('p', {},
+        el('strong', { text: `${de} gravou uma mensagem de voz para você.` }),
+        ' Ela chegou junto com este link, na sua conversa. Dê o play por lá.')));
   }
   carta.append(el('p', { class: 'carta-assinatura' }, 'Com carinho,', el('span', { class: 'nome', text: de })));
   return { carta, player };
@@ -233,30 +240,4 @@ export async function copiar(texto) {
     campo.remove();
     return ok;
   }
-}
-
-// Armazenamento local opcional (lembra os links de gerenciamento neste aparelho).
-export const local = {
-  ler(chave, padrao) {
-    try {
-      const valor = localStorage.getItem(chave);
-      return valor ? JSON.parse(valor) : padrao;
-    } catch {
-      return padrao;
-    }
-  },
-  gravar(chave, valor) {
-    try { localStorage.setItem(chave, JSON.stringify(valor)); } catch { /* sem armazenamento: tudo bem */ }
-  },
-};
-
-export async function api(caminho, opcoes = {}) {
-  const resposta = await fetch(caminho, {
-    ...opcoes,
-    headers: { Accept: 'application/json', ...(opcoes.body ? { 'Content-Type': 'application/json' } : {}) },
-  });
-  if (resposta.status === 204) return { ok: true, status: 204 };
-  let dados = {};
-  try { dados = await resposta.json(); } catch { /* resposta sem corpo */ }
-  return { ok: resposta.ok, status: resposta.status, dados };
 }

@@ -1,13 +1,13 @@
 /* Um carinho de volta — Tetê Atelier Sucré
    Identidade: creme, dourado, textura suave de papel e movimento delicado. */
 
-@font-face { font-family: 'Cormorant Garamond'; font-weight: 400; font-style: normal; font-display: swap; src: url('/fonts/cormorant-400.woff2') format('woff2'); }
-@font-face { font-family: 'Cormorant Garamond'; font-weight: 400; font-style: italic; font-display: swap; src: url('/fonts/cormorant-400-italic.woff2') format('woff2'); }
-@font-face { font-family: 'Cormorant Garamond'; font-weight: 500; font-style: normal; font-display: swap; src: url('/fonts/cormorant-500.woff2') format('woff2'); }
-@font-face { font-family: 'Cormorant Garamond'; font-weight: 600; font-style: normal; font-display: swap; src: url('/fonts/cormorant-600.woff2') format('woff2'); }
-@font-face { font-family: 'Pinyon Script'; font-weight: 400; font-style: normal; font-display: swap; src: url('/fonts/pinyon-400.woff2') format('woff2'); }
-@font-face { font-family: 'Jost'; font-weight: 400; font-style: normal; font-display: swap; src: url('/fonts/jost-400.woff2') format('woff2'); }
-@font-face { font-family: 'Jost'; font-weight: 500; font-style: normal; font-display: swap; src: url('/fonts/jost-500.woff2') format('woff2'); }
+@font-face { font-family: 'Cormorant Garamond'; font-weight: 400; font-style: normal; font-display: swap; src: url('../fonts/cormorant-400.woff2') format('woff2'); }
+@font-face { font-family: 'Cormorant Garamond'; font-weight: 400; font-style: italic; font-display: swap; src: url('../fonts/cormorant-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Cormorant Garamond'; font-weight: 500; font-style: normal; font-display: swap; src: url('../fonts/cormorant-500.woff2') format('woff2'); }
+@font-face { font-family: 'Cormorant Garamond'; font-weight: 600; font-style: normal; font-display: swap; src: url('../fonts/cormorant-600.woff2') format('woff2'); }
+@font-face { font-family: 'Pinyon Script'; font-weight: 400; font-style: normal; font-display: swap; src: url('../fonts/pinyon-400.woff2') format('woff2'); }
+@font-face { font-family: 'Jost'; font-weight: 400; font-style: normal; font-display: swap; src: url('../fonts/jost-400.woff2') format('woff2'); }
+@font-face { font-family: 'Jost'; font-weight: 500; font-style: normal; font-display: swap; src: url('../fonts/jost-500.woff2') format('woff2'); }
 
 :root {
   color-scheme: light;
@@ -49,7 +49,7 @@ body {
   min-height: 100dvh;
   background-color: var(--creme);
   background-image:
-    url('/img/papel.svg'),
+    url('../img/papel.svg'),
     radial-gradient(120% 70% at 50% 0%, var(--creme-claro) 0%, transparent 70%),
     radial-gradient(90% 60% at 50% 110%, var(--creme-escuro) 0%, transparent 70%);
   color: var(--tinta);
@@ -513,7 +513,7 @@ details.cola[open] summary::after { content: ' ▴'; }
   z-index: 2;
   border-radius: 6px;
   background:
-    url('/img/papel.svg'),
+    url('../img/papel.svg'),
     linear-gradient(160deg, var(--papel-envelope) 0%, #efe2c8 100%);
   clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
   filter: drop-shadow(0 -1px 0 rgb(184 145 74 / 25%));
@@ -547,7 +547,7 @@ details.cola[open] summary::after { content: ' ▴'; }
   border-radius: 6px 6px 0 0;
 }
 .env-aba::before {
-  background: url('/img/papel.svg'), linear-gradient(180deg, #f8efdc 0%, #ead9b8 100%);
+  background: url('../img/papel.svg'), linear-gradient(180deg, #f8efdc 0%, #ead9b8 100%);
 }
 .env-aba::after {
   background: linear-gradient(0deg, #f3e7cf, #e2cfaa);
@@ -646,7 +646,7 @@ details.cola[open] summary::after { content: ' ▴'; }
   width: 100%;
   margin-top: 8px;
   padding: 34px 24px 28px;
-  background: url('/img/papel.svg'), var(--creme-claro);
+  background: url('../img/papel.svg'), var(--creme-claro);
   border-radius: 6px;
   box-shadow: var(--sombra-carta);
   text-align: left;
@@ -703,7 +703,7 @@ details.cola[open] summary::after { content: ' ▴'; }
   margin-top: 18px;
 }
 .caixa h3 { margin: 0 0 6px; font: 500 15px/1.3 var(--texto); letter-spacing: .04em; color: var(--tinta); }
-.caixa textarea.entrada { min-height: 120px; font-size: 19px; background-image: none; }
+.caixa textarea.entrada { min-height: 150px; font-size: 19px; background-image: none; }
 .link-gerenciar {
   display: block;
   font-size: 13px;
@@ -785,3 +785,42 @@ li.sugestao a { color: var(--dourado-escuro); }
 /* Enquanto o envelope abre, o texto ao redor sai de cena para a aba não cobri-lo. */
 .cena > :not(.envelope) { transition: opacity .4s; }
 .cena.abrindo > :not(.envelope) { opacity: 0; pointer-events: none; }
+
+.carta-voz {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin: 4px 0 24px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgb(184 145 74 / 10%);
+  font-size: 16px;
+  color: var(--tinta-suave);
+}
+.carta-voz svg {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  border-radius: 50%;
+  background: var(--ouro-gradiente);
+  color: #2f2416;
+}
+.carta-voz p { margin: 0; }
+.carta-voz strong { display: block; color: var(--tinta); font-weight: 500; margin-bottom: 2px; }
+
+.passo { display: flex; gap: 14px; align-items: flex-start; }
+.passo-numero {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--ouro-gradiente);
+  color: #2f2416;
+  font-weight: 500;
+  font-size: 15px;
+}
+.passo-corpo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.passo-corpo h3 { margin: 4px 0 0; }

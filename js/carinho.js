@@ -1,31 +1,19 @@
 // Página de quem recebe: envelope personalizado → abrir → ouvir ou ler → guardar.
 import {
-  el, icones, criarEnvelope, abrirEnvelope, criarCarta, brilhos, api, formatarData,
+  el, icones, criarEnvelope, abrirEnvelope, criarCarta, brilhos,
 } from './comum.js';
+import { desempacotar } from './pacote.js';
 
 const conteudo = document.getElementById('conteudo');
-const id = decodeURIComponent(window.location.pathname.split('/').filter(Boolean)[1] ?? '');
 
-function indisponivel(expirou) {
+function indisponivel() {
   document.title = 'Um carinho de volta';
   conteudo.replaceChildren(el('div', { class: 'cena' },
-    el('h2', { text: expirou ? 'Este carinho já completou seu tempo por aqui.' : 'Não encontramos este carinho.' }),
+    el('h2', { text: 'Não conseguimos abrir este carinho.' }),
     el('div', { class: 'filete', 'aria-hidden': 'true' }),
-    el('p', {
-      class: 'lead',
-      text: expirou
-        ? 'Os agradecimentos ficam disponíveis por um período e depois são apagados com cuidado.'
-        : 'O link pode estar incompleto, ou a mensagem foi excluída por quem a preparou.',
-    }),
-    el('p', { class: 'nota', text: 'Se quiser, peça para quem enviou preparar outro.' })));
-}
-
-function falhaConexao() {
-  conteudo.replaceChildren(el('div', { class: 'cena' },
-    el('h2', { text: 'A conexão oscilou.' }),
-    el('p', { class: 'lead', text: 'Seu carinho continua guardado. Confira a internet e tente de novo.' }),
-    el('div', { class: 'acoes' },
-      el('button', { type: 'button', class: 'botao botao-principal', text: 'Tentar de novo', onclick: carregar }))));
+    el('p', { class: 'lead', text: 'O link parece ter chegado incompleto. Ele precisa estar inteiro, até o último caractere.' }),
+    el('p', { class: 'nota', text: 'Tente tocar no link de novo, direto na conversa, ou peça para quem enviou mandar outra vez.' }),
+    el('div', { class: 'acoes' }, el('a', { class: 'botao botao-secundario', href: '../', text: 'Preparar um agradecimento' }))));
 }
 
 // Quebra o texto em linhas que caibam na largura do cartão.
@@ -115,36 +103,17 @@ async function guardarBilhete(dados) {
 }
 
 function mostrarCarta(dados) {
-  const { carta, player } = criarCarta({ ...dados, audioSrc: dados.audioUrl });
+  const { carta } = criarCarta(dados);
   carta.classList.add('revelando');
   const guardar = el('div', { class: 'guardar' });
-
-  if (player) {
-    const ouvirDeNovo = el('button', { type: 'button', class: 'botao botao-secundario', hidden: true },
-      icones.repetir(), 'Ouvir de novo');
-    ouvirDeNovo.addEventListener('click', () => player.reiniciar().catch(() => {}));
-    player.elemento.addEventListener('terminou', () => { ouvirDeNovo.hidden = false; });
-    guardar.append(
-      ouvirDeNovo,
-      el('a', { class: 'botao botao-texto', href: `${dados.audioUrl}?baixar`, download: '' },
-        icones.baixar(), 'Guardar o áudio no celular'),
-    );
-    // O toque em "abrir" conta como gesto do usuário; se o navegador ainda assim bloquear, basta tocar no play.
-    player.tocar().catch(() => {});
-  } else {
+  if (dados.bilhete) {
     guardar.append(el('button', {
       type: 'button',
       class: 'botao botao-texto',
       onclick: () => guardarBilhete(dados),
     }, icones.baixar(), 'Guardar o bilhete como imagem'));
   }
-
-  conteudo.replaceChildren(
-    el('div', { class: 'cena' },
-      carta,
-      guardar,
-      el('p', { class: 'validade', text: `Disponível para ${player ? 'ouvir' : 'ler'} e guardar até ${formatarData(dados.expiraEm)}.` })),
-  );
+  conteudo.replaceChildren(el('div', { class: 'cena' }, carta, guardar));
   conteudo.focus({ preventScroll: true });
 }
 
@@ -176,16 +145,11 @@ function mostrarEnvelope(dados) {
 }
 
 async function carregar() {
-  try {
-    const resposta = await api(`/api/mensagens/${encodeURIComponent(id)}`);
-    if (resposta.ok) mostrarEnvelope(resposta.dados);
-    else if (resposta.status === 410) indisponivel(true);
-    else if (resposta.status === 404 || resposta.status === 400) indisponivel(false);
-    else falhaConexao();
-  } catch {
-    falhaConexao();
-  }
+  const dados = await desempacotar(window.location.hash);
+  if (dados) mostrarEnvelope(dados);
+  else indisponivel();
 }
 
+window.addEventListener('hashchange', carregar);
 brilhos(10);
 carregar();

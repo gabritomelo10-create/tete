@@ -1,8 +1,9 @@
 // Caminho de quem agradece: nomes → palavras → gravar/escrever → prévia → salvar → compartilhar.
 import {
   el, icones, criarEnvelope, abrirEnvelope, criarCarta, criarPlayer, brilhos,
-  avisar, copiar, local, api, formatarTempo, formatarData,
+  avisar, copiar, formatarTempo,
 } from './comum.js';
+import { empacotar } from './pacote.js';
 
 const LIMITE_MS = 60_000;
 const MINIMO_MS = 1_000;
@@ -19,7 +20,7 @@ const estado = {
   tipo: null, // 'audio' | 'bilhete'
   audio: null, // { blob, url, duracaoMs }
   bilhete: '',
-  salvo: null, // resposta do servidor
+  salvo: null, // { link } depois de "Está pronto"
 };
 
 const $ = (seletor) => document.querySelector(seletor);
@@ -121,7 +122,8 @@ $('#form-nomes').addEventListener('submit', (evento) => {
 
 function escolherFormato() {
   if (typeof MediaRecorder === 'undefined') return null;
-  const opcoes = ['audio/webm;codecs=opus', 'audio/mp4;codecs=mp4a.40.2', 'audio/mp4', 'audio/webm', 'audio/ogg;codecs=opus'];
+  // MP4 (AAC) primeiro: é o formato que o WhatsApp e os celulares abrem melhor como arquivo de áudio.
+  const opcoes = ['audio/mp4;codecs=mp4a.40.2', 'audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
   return opcoes.find((tipo) => MediaRecorder.isTypeSupported?.(tipo)) ?? '';
 }
 
@@ -316,16 +318,22 @@ $('#continuar-bilhete').addEventListener('click', () => {
 
 // ---------- Prévia ----------
 
-function montarPrevia() {
-  const cena = $('#cena-previa');
-  const dados = {
+function dadosDoCarinho() {
+  const comAudio = estado.tipo === 'audio';
+  return {
     para: estado.para,
     de: estado.de,
-    tipo: estado.tipo,
-    bilhete: estado.bilhete.trim(),
-    audioSrc: estado.audio?.url,
-    duracaoMs: estado.audio?.duracaoMs,
+    bilhete: comAudio ? '' : estado.bilhete.trim(),
+    comAudio,
   };
+}
+
+function montarPrevia() {
+  $('#aviso-bilhete').hidden = estado.tipo === 'audio';
+  $('#aviso-audio').hidden = estado.tipo !== 'audio';
+  const cena = $('#cena-previa');
+  // A prévia mostra exatamente o que a pessoa vai ver: o áudio chega à parte, na conversa.
+  const dados = dadosDoCarinho();
   const envelope = criarEnvelope({
     para: estado.para,
     rotulo: 'Toque para ver como o envelope se abre',
@@ -349,47 +357,30 @@ function montarPrevia() {
 
 $('#editar').addEventListener('click', () => irPara(estado.tipo === 'audio' ? 'gravar' : 'escrever'));
 
-function lerComoBase64(blob) {
-  return new Promise((resolve, reject) => {
-    const leitor = new FileReader();
-    leitor.onload = () => resolve(String(leitor.result).split(',')[1] ?? '');
-    leitor.onerror = () => reject(leitor.error);
-    leitor.readAsDataURL(blob);
-  });
-}
-
 $('#salvar').addEventListener('click', async () => {
-  const botao = $('#salvar');
   const erro = $('#erro-salvar');
   erro.hidden = true;
-  botao.disabled = true;
-  botao.textContent = 'Preparando seu carinho…';
   try {
-    const corpo = { para: estado.para, de: estado.de, tipo: estado.tipo };
-    if (estado.tipo === 'audio') {
-      corpo.audio = await lerComoBase64(estado.audio.blob);
-      corpo.duracaoMs = Math.round(estado.audio.duracaoMs);
-    } else {
-      corpo.bilhete = estado.bilhete.trim();
-    }
-    const resposta = await api('/api/mensagens', { method: 'POST', body: JSON.stringify(corpo) });
-    if (!resposta.ok) throw new Error(resposta.dados?.erro ?? 'Não conseguimos salvar agora. Tente novamente.');
-    estado.salvo = resposta.dados;
-    lembrarCarinho();
+    const pacote = await empacotar(dadosDoCarinho());
+    estado.salvo = { link: new URL(`c/#${pacote}`, window.location.href).href };
     irPara('pronto');
     history.replaceState({ etapa: 'pronto' }, '', '');
-  } catch (falha) {
-    erro.textContent = falha instanceof TypeError
-      ? 'Parece que a internet oscilou. Confira a conexão e toque em “Está pronto” de novo.'
-      : falha.message;
+  } catch {
+    erro.textContent = 'Não conseguimos montar o carinho. Confira os nomes e a mensagem e tente de novo.';
     erro.hidden = false;
-  } finally {
-    botao.disabled = false;
-    botao.textContent = 'Está pronto';
   }
 });
 
 // ---------- Pronto / compartilhar ----------
+
+const EXTENSOES = { 'audio/mp4': 'm4a', 'audio/webm': 'weba', 'audio/ogg': 'ogg' };
+
+function arquivoDeAudio() {
+  const tipo = (estado.audio.blob.type || 'audio/mp4').split(';')[0];
+  const nome = `carinho-para-${estado.para}`.normalize('NFD').replace(/\p{M}/gu, '')
+    .replace(/[^\w-]+/g, '-').replace(/-+/g, '-').replace(/-$/, '').toLowerCase();
+  return new File([estado.audio.blob], `${nome}.${EXTENSOES[tipo] ?? 'm4a'}`, { type: tipo });
+}
 
 function textoCompleto() {
   const texto = $('#texto-envio').value.trim();
@@ -397,17 +388,30 @@ function textoCompleto() {
 }
 
 function montarPronto() {
+  const comAudio = estado.tipo === 'audio';
   $('#selo-ok').replaceChildren(icones.ok());
+  for (const parte of document.querySelectorAll('[data-com-audio]')) parte.hidden = !comAudio;
   const texto = $('#texto-envio');
   if (!texto.value) {
     texto.value = `${estado.para}, seu presente deixou meu dia mais doce. Preparei um carinho de volta para você 💛`;
   }
-  $('#data-expira').textContent = formatarData(estado.salvo.expiraEm);
-  $('#link-gerenciar').textContent = estado.salvo.linkGerenciar;
-  const compartilhar = $('#compartilhar');
   const podeCompartilhar = typeof navigator.share === 'function';
-  compartilhar.replaceChildren(icones.compartilhar(), podeCompartilhar ? 'Compartilhar' : 'Enviar pelo WhatsApp');
+  $('#compartilhar').replaceChildren(icones.compartilhar(), podeCompartilhar ? 'Compartilhar' : 'Enviar pelo WhatsApp');
   $('#copiar-link').replaceChildren(icones.copiar(), 'Copiar link');
+
+  if (comAudio) {
+    const arquivo = arquivoDeAudio();
+    const podeEnviarArquivo = navigator.canShare?.({ files: [arquivo] }) === true;
+    const baixar = $('#baixar-audio');
+    baixar.href = estado.audio.url;
+    baixar.download = arquivo.name;
+    baixar.replaceChildren(icones.baixar(), podeEnviarArquivo ? 'Ou baixe o áudio para anexar' : 'Baixar o áudio');
+    $('#compartilhar-audio').hidden = !podeEnviarArquivo;
+    $('#compartilhar-audio').replaceChildren(icones.compartilhar(), 'Compartilhar o áudio');
+    $('#dica-audio').textContent = podeEnviarArquivo
+      ? 'Escolha a mesma pessoa. O áudio chega logo abaixo do envelope.'
+      : 'Baixe o áudio e anexe na mesma conversa, logo depois do envelope.';
+  }
 }
 
 $('#compartilhar').addEventListener('click', async () => {
@@ -425,44 +429,21 @@ $('#compartilhar').addEventListener('click', async () => {
   window.open(`https://wa.me/?text=${encodeURIComponent(textoCompleto())}`, '_blank', 'noopener');
 });
 
+$('#compartilhar-audio').addEventListener('click', async () => {
+  try {
+    await navigator.share({ files: [arquivoDeAudio()] });
+  } catch (falha) {
+    if (falha?.name !== 'AbortError') avisar('Não deu para compartilhar. Use “baixar o áudio”.');
+  }
+});
+
 $('#copiar-link').addEventListener('click', async () => {
   avisar(await copiar(estado.salvo.link) ? 'Link copiado' : 'Não deu para copiar. Toque e segure o link.');
 });
-$('#copiar-gerenciar').addEventListener('click', async () => {
-  avisar(await copiar(estado.salvo.linkGerenciar) ? 'Link de gerenciamento copiado' : 'Não deu para copiar. Toque e segure o link.');
-});
-
-// ---------- Carinhos preparados neste aparelho ----------
-
-const CHAVE_LOCAL = 'carinhos';
-
-function lembrarCarinho() {
-  const lista = local.ler(CHAVE_LOCAL, []);
-  lista.unshift({
-    para: estado.para,
-    link: estado.salvo.link,
-    linkGerenciar: estado.salvo.linkGerenciar,
-    expiraEm: estado.salvo.expiraEm,
-  });
-  local.gravar(CHAVE_LOCAL, lista.slice(0, 20));
-}
-
-function listarCarinhos() {
-  const lista = local.ler(CHAVE_LOCAL, []).filter((c) => new Date(c.expiraEm) > new Date());
-  local.gravar(CHAVE_LOCAL, lista);
-  const destino = $('#lista-meus-carinhos');
-  destino.replaceChildren(...lista.map((c) => el('li', { class: 'sugestao' },
-    `Para ${c.para} · `,
-    el('a', { href: c.link, text: 'abrir' }),
-    ' · ',
-    el('a', { href: c.linkGerenciar, text: 'gerenciar' }))));
-  $('#meus-carinhos').hidden = lista.length === 0;
-}
 
 // ---------- Início ----------
 
 const aoEntrar = {
-  inicio: listarCarinhos,
   nomes: () => {
     campoPara.value = estado.para;
     campoDe.value = estado.de;
@@ -482,7 +463,7 @@ const aoEntrar = {
 
 $('#novo-carinho').addEventListener('click', (evento) => {
   evento.preventDefault();
-  window.location.assign('/');
+  window.location.assign(window.location.pathname);
 });
 
 brilhos();

@@ -8,17 +8,19 @@
   <meta name="theme-color" content="#f7f0e3">
   <meta property="og:title" content="Um carinho merece outro.">
   <meta property="og:description" content="Grave um agradecimento e devolva o carinho de um jeito especial.">
-  <meta property="og:image" content="{{URL_BASE}}/img/compartilhar.png">
+  <meta property="og:image" content="https://gabritomelo10-create.github.io/tete/img/compartilhar.png">
   <meta property="og:locale" content="pt_BR">
-  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="/fonts/cormorant-500.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/pinyon-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/estilo.css">
-  <script type="module" src="/js/criar.js"></script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/cormorant-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/pinyon-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/estilo.css">
+  <script type="module" src="js/criar.js"></script>
 </head>
 <body>
   <main class="pagina">
-    <a class="marca" href="/" aria-label="Tetê Atelier Sucré — início">
+    <a class="marca" href="./" aria-label="Tetê Atelier Sucré — início">
       <span class="marca-nome">Tetê</span>
       <span class="marca-sub">Atelier Sucré</span>
     </a>
@@ -34,10 +36,6 @@
         <button type="button" class="botao botao-principal" data-ir="nomes">Preparar meu agradecimento</button>
         <p class="nota">Sem cadastro. Você grava uma mensagem de voz ou escreve um bilhete, e envia do seu celular.</p>
       </div>
-      <details class="cola" id="meus-carinhos" hidden>
-        <summary>Carinhos que preparei neste aparelho</summary>
-        <ul class="sugestoes sugestoes-compactas" id="lista-meus-carinhos"></ul>
-      </details>
     </section>
 
     <!-- 2. Nomes -->
@@ -145,7 +143,8 @@
       <div class="cena" id="cena-previa"></div>
       <div class="aviso" id="aviso-privacidade">
         <p><strong>Antes de concluir:</strong> qualquer pessoa com o link poderá abrir este agradecimento. Envie só para quem você quer.</p>
-        <p>Ele fica disponível por <strong data-dias>90 dias</strong> e depois é apagado. Você recebe um link para excluir antes, se quiser.</p>
+        <p id="aviso-bilhete">O bilhete vai dentro do próprio link e não fica guardado em nenhum servidor.</p>
+        <p id="aviso-audio" hidden>Você vai enviar duas coisas na mesma conversa: o link do envelope e, logo depois, o seu áudio. Nada fica guardado em servidor.</p>
       </div>
       <p class="erro-campo" id="erro-salvar" role="alert" hidden></p>
       <div class="acoes">
@@ -162,24 +161,29 @@
       <h2 id="t-pronto" class="centro">Seu carinho está pronto para fazer o caminho de volta.</h2>
       <p class="nota centro">Escolha a pessoa no seu celular e envie quando quiser.</p>
 
-      <div class="caixa">
-        <h3><label for="texto-envio">Mensagem para acompanhar</label></h3>
-        <textarea class="entrada" id="texto-envio" maxlength="400"></textarea>
+      <div class="caixa passo">
+        <span class="passo-numero" data-com-audio hidden>1</span>
+        <div class="passo-corpo">
+          <h3><label for="texto-envio">Envie o envelope</label></h3>
+          <textarea class="entrada" id="texto-envio" maxlength="400" aria-describedby="dica-texto"></textarea>
+          <span class="dica nota" id="dica-texto">O link do envelope vai junto com esta mensagem.</span>
+          <button type="button" class="botao botao-principal" id="compartilhar"></button>
+          <button type="button" class="botao botao-secundario" id="copiar-link"></button>
+        </div>
       </div>
 
-      <div class="acoes pt-18">
-        <button type="button" class="botao botao-principal" id="compartilhar"></button>
-        <button type="button" class="botao botao-secundario" id="copiar-link"></button>
+      <div class="caixa passo" data-com-audio hidden>
+        <span class="passo-numero">2</span>
+        <div class="passo-corpo">
+          <h3>Envie seu áudio na mesma conversa</h3>
+          <p class="nota" id="dica-audio">Escolha a mesma pessoa. O áudio chega logo abaixo do envelope.</p>
+          <button type="button" class="botao botao-principal" id="compartilhar-audio"></button>
+          <a class="botao botao-texto" id="baixar-audio" download></a>
+        </div>
       </div>
 
-      <div class="caixa">
-        <h3>Para excluir quando quiser</h3>
-        <p class="nota">Guarde este link só para você. Com ele, dá para apagar o carinho antes do prazo. Disponível até <strong id="data-expira"></strong>.</p>
-        <code class="link-gerenciar" id="link-gerenciar"></code>
-        <button type="button" class="botao botao-texto" id="copiar-gerenciar">Copiar link de gerenciamento</button>
-      </div>
-
-      <p class="link-voltar-carinhos"><a href="/" id="novo-carinho">Preparar outro carinho</a></p>
+      <p class="nota centro mt-12">Este carinho vive dentro do link: ele não fica guardado em nenhum servidor nem tem prazo para acabar.</p>
+      <p class="link-voltar-carinhos"><a href="./" id="novo-carinho">Preparar outro carinho</a></p>
     </section>
   </main>
 
